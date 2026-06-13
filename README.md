@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # RAG_AgenticAI_Hackathon
 # Financial RAG Chatbot
 
@@ -105,6 +104,3 @@ npm start
 - Architecture and RAG Design
 - Backend Development
 - Frontend Development and Presentation
-=======
-# hackathon_project
->>>>>>> 290d9cee6b148b2e265204cf735ce2fd93c8a691
