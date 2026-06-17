@@ -1,0 +1,7 @@
+all must be in subtle.
+text inside must be white or black , according to colour
+
+amazon - amber subtle
+infosys- blue subtle
+google - lightt pinkish white subtle
+
