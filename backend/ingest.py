@@ -48,7 +48,8 @@ def chunk_text(text, chunk_size=config.CHUNK_SIZE, overlap=config.CHUNK_OVERLAP)
     return chunks
 
 # --- Step 4: Process each PDF ---
-docs_path = "./docs"
+
+docs_path = os.path.join(config.BASE_DIR, "data", "pdfs")
 total_chunks = 0
 
 for filename, metadata in config.DOC_METADATA.items():

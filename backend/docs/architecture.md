@@ -85,8 +85,8 @@ SIMPLE     COMPLEX
 
 We selected ChromaDB because it is easy to set up and works locally without requiring any external service. Since this is a hackathon project, simplicity and fast development were more important than large-scale production features.
 
-### Choice of text-embedding-3-small (not ada-002)?
-It is Newer model (released 2024),Same quality, lower cost ($0.02 vs $0.10 per 1M tokens), Directly available via OpenAI Python SDK
+### Embedding Model
+We use all-MiniLM-L6-v2 (sentence-transformers) — runs locally, no API key needed, no cost per query.
 
 ### LLM Selection
 Claude was chosen because it performs well on document-based question answering and follows instructions reliably when working with retrieved context.
