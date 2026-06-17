@@ -32,7 +32,7 @@ CHUNK_OVERLAP = 100     # overlap between chunks
 #Retrieval (used in retriever.py)
 
 TOP_K = 5
-SIMILARITY_THRESHOLD = 0.4
+SIMILARITY_THRESHOLD = 0.15
 
 #Models 
 
@@ -118,3 +118,4 @@ Example:
 API_HOST = "0.0.0.0"
 API_PORT = 8000
 CORS_ORIGINS = ["http://localhost:3000"]
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")

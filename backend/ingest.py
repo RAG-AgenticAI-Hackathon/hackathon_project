@@ -49,12 +49,20 @@ def chunk_text(text, chunk_size=config.CHUNK_SIZE, overlap=config.CHUNK_OVERLAP)
 
 # --- Step 4: Process each PDF ---
 
-docs_path = os.path.join(config.BASE_DIR, "data", "pdfs")
+# --- Step 4: Process each PDF ---
 total_chunks = 0
 
+# company name mapping to folder name
+company_folder = {
+    "Infosys": "infosys",
+    "Amazon": "amazon",
+    "Alphabet": "alphabet",
+}
+
 for filename, metadata in config.DOC_METADATA.items():
-    pdf_path = os.path.join(docs_path, filename)
-    
+    company = metadata["company"]
+    folder = company_folder[company]
+    pdf_path = os.path.join(config.BASE_DIR, "data", "pdfs", folder, filename)
     if not os.path.exists(pdf_path):
         print(f"WARNING: {filename} not found, skipping...")
         continue
