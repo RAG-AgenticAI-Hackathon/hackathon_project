@@ -26,13 +26,13 @@ DOC_METADATA = {
 
 #Chunking (used in ingest.py) 
 
-CHUNK_SIZE = 800        # characters per chunk
-CHUNK_OVERLAP = 100     # overlap between chunks
+CHUNK_SIZE = 400        # characters per chunk
+CHUNK_OVERLAP = 50    # overlap between chunks
 
 #Retrieval (used in retriever.py)
 
 TOP_K = 5
-SIMILARITY_THRESHOLD = 0.15
+SIMILARITY_THRESHOLD = 0.1
 
 #Models 
 
@@ -65,7 +65,7 @@ Rules:
 - Always mention which company the information came from.
 - For numbers, be precise. Don't round unless the document rounds.
 - If the question is not about Infosys, Amazon, or Alphabet financials, say: "This question is outside the scope of the provided documents."
-
+- If asked to compare, extract the specific metric for the company mentioned in the source documents and state it clearly with the company name.
 QUESTION: {question}
 
 DOCUMENTS:
@@ -73,26 +73,24 @@ DOCUMENTS:
 
 ANSWER:"""
 
-
 ROUTER_PROMPT_TEMPLATE = """You are a query classifier for a financial document analysis system covering three companies: Infosys, Amazon, and Alphabet.
 
 Classify the question as SIMPLE or COMPLEX.
 
-SIMPLE = question about one company, one metric, or one time period.
-Examples:
-  - "What was Infosys's revenue in FY2024?" → {{"type": "SIMPLE", "companies": ["Infosys"]}}
-  - "What are Amazon's business segments?"  → {{"type": "SIMPLE", "companies": ["Amazon"]}}
-  - "Who is Alphabet's CEO?"               → {{"type": "SIMPLE", "companies": ["Alphabet"]}}
+SIMPLE = question about one company only.
+COMPLEX = comparison across 2 or more companies.
 
-COMPLEX = comparison across companies, multiple years, or calculations.
+For COMPLEX questions, always include ALL relevant companies.
+
 Examples:
-  - "Compare net income of Infosys and Amazon" → {{"type": "COMPLEX", "companies": ["Infosys", "Amazon"]}}
-  - "Which company grew revenue fastest?"      → {{"type": "COMPLEX", "companies": ["Infosys", "Amazon", "Alphabet"]}}
-  - "How did Alphabet R&D change 2021-2023?"  → {{"type": "COMPLEX", "companies": ["Alphabet"]}}
+- "What was Infosys revenue?" → {{"type": "SIMPLE", "companies": ["Infosys"]}}
+- "What are Amazon segments?" → {{"type": "SIMPLE", "companies": ["Amazon"]}}
+- "Compare Infosys and Amazon net income" → {{"type": "COMPLEX", "companies": ["Infosys", "Amazon"]}}
+- "Which company had highest growth?" → {{"type": "COMPLEX", "companies": ["Infosys", "Amazon", "Alphabet"]}}
 
 Question: {question}
 
-Respond ONLY in JSON. No explanation. Example: {{"type": "SIMPLE", "companies": ["Infosys"]}}"""
+Respond ONLY in JSON. No explanation."""
 
 
 SUB_QUESTION_SPLITTER_TEMPLATE = """You are a query decomposer for a financial document system.
