@@ -30,7 +30,7 @@ ChromaDB Search    ChromaDB Search × N
      ↓                    ↓
 Top-K Chunks       Merge Chunks
      ↓                    ↓
-         LLM (Claude)
+    LLM (Groq · Llama 3.3 70B)
               ↓
      Answer + Citations
 ```
@@ -44,9 +44,9 @@ Top-K Chunks       Merge Chunks
 | Technology | Purpose |
 |------------|----------|
 | pdfplumber | Extracting text from annual reports |
-| OpenAI Embeddings | Converting document chunks into vector embeddings |
+| sentence-transformers (all-MiniLM-L6-v2) | Converting document chunks into vector embeddings (runs locally, no API key) |
 | ChromaDB | Storing and searching embeddings |
-| Claude | Generating answers from retrieved content |
+| Groq (Llama 3.3 70B) | Generating answers from retrieved content |
 | FastAPI | Backend API development |
 | React | Building the user interface |
 | Render | Backend deployment |
@@ -59,8 +59,8 @@ Top-K Chunks       Merge Chunks
 ### Prerequisites
 - Python 3.10+
 - Node.js 18+
-- OpenAI API key (for embeddings)
-- Anthropic API key (for LLM)
+- Groq API key (for the LLM)
+- No embeddings API key needed — embeddings run locally via sentence-transformers
 
 ### Backend Setup
 ```bash

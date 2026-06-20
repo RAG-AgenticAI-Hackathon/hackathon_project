@@ -18,7 +18,7 @@ User types a question
         ▼
 ┌─────────────────┐
 │   Router Agent  │  ← ROUTER_PROMPT_TEMPLATE
-│  (SIMPLE or     │    Calls Claude to classify
+│  (SIMPLE or     │    Calls Groq (Llama 3.3 70B) to classify
 │   COMPLEX?)     │
 └────────┬────────┘
          │
@@ -39,7 +39,7 @@ SIMPLE     COMPLEX
     ▼                 ▼
 ┌──────────────────────────────┐
 │         retriever.py         │
-│  1. Embed query (OpenAI)     │
+│  1. Embed query (MiniLM)     │
 │  2. Search ChromaDB (top-K)  │
 │  3. Filter by threshold      │
 │  4. Return chunks + scores   │
@@ -55,7 +55,7 @@ SIMPLE     COMPLEX
                │ (top-K chunks returned)
                ▼
 ┌──────────────────────────────┐
-│          Claude LLM          │
+│   Groq LLM (Llama 3.3 70B)   │
 │  RAG_PROMPT_TEMPLATE         │
 │  + question + chunks         │
 │  → generates answer          │
@@ -89,7 +89,7 @@ We selected ChromaDB because it is easy to set up and works locally without requ
 We use all-MiniLM-L6-v2 (sentence-transformers) — runs locally, no API key needed, no cost per query.
 
 ### LLM Selection
-Claude was chosen because it performs well on document-based question answering and follows instructions reliably when working with retrieved context.
+Groq running Llama 3.3 70B (`llama-3.3-70b-versatile`) was chosen because it performs well on document-based question answering, follows instructions reliably when working with retrieved context, and Groq's API is fast and free — a good fit for a hackathon.
 
 ### Chunking Strategy
 We started with a chunk size of 500 tokens and an overlap of 50 tokens. These values provided a good balance between retrieval accuracy and context coverage during initial testing.
