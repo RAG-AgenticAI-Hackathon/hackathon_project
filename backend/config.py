@@ -37,6 +37,7 @@ SIMILARITY_THRESHOLD = 0.4
 #Models 
 
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"   # runs locally, no API key needed
+# LLM_MODEL is unused: api.py hardcodes llama-3.3-70b-versatile via Groq.
 LLM_MODEL = "claude-sonnet-4-6"
 LLM_MAX_TOKENS = 1024
 
@@ -53,7 +54,7 @@ CHROMA_COLLECTION = CHROMA_COLLECTION_NAME
 
 #API Keys
 
-ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 #Prompts 
 

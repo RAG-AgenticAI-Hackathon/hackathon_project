@@ -2,12 +2,12 @@
 # This is the FastAPI backend — the "server" that listens for questions
 # and returns AI-generated answers.
 #
-# Flow: User question → retriever.py finds chunks → Claude reads chunks → answer returned
+# Flow: User question → retriever.py finds chunks → LLM reads chunks → answer returned
 #
 # Person C's frontend will send a POST request to /ask and get back a JSON answer.
 
 import json
-import anthropic
+from groq import Groq
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -16,7 +16,8 @@ from retriever import retrieve
 
 # --- Setup ---
 app = FastAPI(title="Financial RAG API")
-claude = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
+groq_client = Groq(api_key=config.GROQ_API_KEY)
+LLM_MODEL = "llama-3.3-70b-versatile"
 
 # CORS allows Person C's frontend (running on a different port) to call this API
 app.add_middleware(
@@ -38,29 +39,29 @@ class AskResponse(BaseModel):
 # --- Router: decide if question is simple or complex ---
 def classify_question(question: str) -> dict:
     """
-    Ask Claude to classify the question.
+    Ask the LLM to classify the question.
     Returns: {"type": "SIMPLE", "companies": ["Infosys"]}
     """
     prompt = config.ROUTER_PROMPT_TEMPLATE.format(question=question)
-    
-    response = claude.messages.create(
-        model="claude-sonnet-4-6",
+
+    response = groq_client.chat.completions.create(
+        model=LLM_MODEL,
         max_tokens=200,
         messages=[{"role": "user", "content": prompt}]
     )
-    
-    raw = response.content[0].text.strip()
-    
+
+    raw = response.choices[0].message.content.strip()
+
     try:
         return json.loads(raw)
     except:
-        # fallback if Claude doesn't return clean JSON
+        # fallback if the model doesn't return clean JSON
         return {"type": "SIMPLE", "companies": ["Infosys"]}
 
 # --- Main answer function ---
 def get_answer(question: str, companies: list) -> tuple:
     """
-    Retrieve relevant chunks and ask Claude to answer based on them.
+    Retrieve relevant chunks and ask the LLM to answer based on them.
     Returns (answer_text, citations_list)
     """
     # Get relevant chunks from ChromaDB
@@ -75,19 +76,19 @@ def get_answer(question: str, companies: list) -> tuple:
         context += f"[Source {i+1} - {chunk['company']} {chunk['year']}]\n"
         context += chunk["text"] + "\n\n"
     
-    # Ask Claude
+    # Ask the LLM
     prompt = config.RAG_PROMPT_TEMPLATE.format(
         context=context,
         question=question
     )
     
-    response = claude.messages.create(
-        model="claude-sonnet-4-6",
+    response = groq_client.chat.completions.create(
+        model=LLM_MODEL,
         max_tokens=1000,
         messages=[{"role": "user", "content": prompt}]
     )
-    
-    answer = response.content[0].text.strip()
+
+    answer = response.choices[0].message.content.strip()
     
     # Build citations list for the frontend
     citations = [
