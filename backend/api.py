@@ -19,22 +19,21 @@ app = FastAPI(title="Financial RAG API")
 groq_client = Groq(api_key=config.GROQ_API_KEY)
 LLM_MODEL = "llama-3.3-70b-versatile"
 
-# CORS allows Person C's frontend (running on a different port) to call this API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # in production you'd restrict this
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # --- Request/Response shapes ---
 class AskRequest(BaseModel):
-    question: str  # what the user typed
+    question: str
 
 class AskResponse(BaseModel):
     answer: str
-    citations: list  # which chunks were used
-    question_type: str  # SIMPLE or COMPLEX
+    citations: list
+    question_type: str
 
 # --- Router: decide if question is simple or complex ---
 def classify_question(question: str) -> dict:
@@ -47,6 +46,7 @@ def classify_question(question: str) -> dict:
     response = groq_client.chat.completions.create(
         model=LLM_MODEL,
         max_tokens=200,
+        temperature=0.1,   # low = more factual, less creative
         messages=[{"role": "user", "content": prompt}]
     )
 
@@ -68,9 +68,9 @@ def get_answer(question: str, companies: list) -> tuple:
     chunks = retrieve(question, companies=companies)
     
     if not chunks:
-        return "I don't have enough information to answer that question.", []
+        return "I don't have enough information in the provided documents to answer this.", []
     
-    # Build context string from chunks
+    # Build context from retrieved chunks
     context = ""
     for i, chunk in enumerate(chunks):
         context += f"[Source {i+1} - {chunk['company']} {chunk['year']}]\n"
@@ -81,15 +81,16 @@ def get_answer(question: str, companies: list) -> tuple:
         context=context,
         question=question
     )
-    
+
     response = groq_client.chat.completions.create(
         model=LLM_MODEL,
         max_tokens=1000,
+        temperature=0.1,   # low = more factual, less creative
         messages=[{"role": "user", "content": prompt}]
     )
 
     answer = response.choices[0].message.content.strip()
-    
+
     # Build citations list for the frontend
     citations = [
         {
@@ -116,12 +117,12 @@ def ask(request: AskRequest):
     if not question:
         raise HTTPException(status_code=400, detail="Question cannot be empty")
     
-    # Step 1: classify the question
+    # Step 1: classify
     classification = classify_question(question)
     question_type = classification.get("type", "SIMPLE")
     companies = classification.get("companies", ["Infosys"])
     
-    # Step 2: for COMPLEX questions, get answers per company then combine
+    # Step 2: COMPLEX — answer per company and combine
     if question_type == "COMPLEX":
         combined_answer = ""
         all_citations = []
@@ -137,7 +138,7 @@ def ask(request: AskRequest):
             question_type="COMPLEX"
         )
     
-    # Step 3: SIMPLE — just answer directly
+    # Step 3: SIMPLE — answer directly
     answer, citations = get_answer(question, companies=companies)
     
     return AskResponse(
@@ -145,3 +146,7 @@ def ask(request: AskRequest):
         citations=citations,
         question_type="SIMPLE"
     )
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host=config.API_HOST, port=config.API_PORT)

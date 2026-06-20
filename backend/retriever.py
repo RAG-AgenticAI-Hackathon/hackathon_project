@@ -66,7 +66,7 @@ def retrieve(question, companies=None):
 
 # --- Quick test (only runs when you execute this file directly) ---
 if __name__ == "__main__":
-    question = "What is Infosys revenue in 2023?"
+    question = "What is Infosys revenue in 2024?"
     print(f"Question: {question}\n")
     
     results = retrieve(question, companies=["Infosys"])
