@@ -1,6 +1,6 @@
 // Set MOCK_MODE = true to test the full UI without needing the backend running.
 // Flip back to false once Person B's API is up at localhost:8000.
-const MOCK_MODE = true;
+const MOCK_MODE = false;
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
