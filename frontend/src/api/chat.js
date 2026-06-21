@@ -2,9 +2,11 @@
 // Flip back to false once Person B's API is up at localhost:8000.
 const MOCK_MODE = false;
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE =
+  import.meta.env.VITE_API_URL ||
+  "https://unnoticed-overwrite-prior.ngrok-free.dev";
 
-// ─── Mock responses ──────────────────────────────────────────────────────────
+// Mock responses 
 
 const MOCK_SIMPLE = {
   answer:

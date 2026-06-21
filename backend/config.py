@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-#Companies 
+#  Companies 
 
 COMPANIES = ["infosys", "amazon", "alphabet"]
 
@@ -16,7 +16,7 @@ COMPANY_DISPLAY_NAMES = {
     "alphabet": "Alphabet (Google)",
 }
 
-#PDF Metadata 
+#  PDF Metadata 
 
 DOC_METADATA = {
     "infosys_2024.pdf":  {"company": "Infosys",  "year": 2024},
@@ -24,38 +24,46 @@ DOC_METADATA = {
     "alphabet_2023.pdf": {"company": "Alphabet", "year": 2023},
 }
 
-#Chunking (used in ingest.py) 
+#  Chunking 
 
-CHUNK_SIZE = 400        # characters per chunk
-CHUNK_OVERLAP = 50    # overlap between chunks
+CHUNK_SIZE = 400
+CHUNK_OVERLAP = 50
 
-#Retrieval (used in retriever.py)
+#  Retrieval 
 
 TOP_K = 5
 SIMILARITY_THRESHOLD = 0.1
 
-#Models 
+#  Models 
 
-EMBEDDING_MODEL = "all-MiniLM-L6-v2"   # runs locally, no API key needed
-LLM_MODEL = "llama-3.3-70b-versatile"  # Groq-hosted model used by api.py
+EMBEDDING_MODEL = "all-MiniLM-L6-v2"
+LLM_MODEL = "llama-3.3-70b-versatile"
 LLM_MAX_TOKENS = 1024
 
-#Paths ─
+#  Paths 
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PDF_DIR  = os.path.join(BASE_DIR, "data", "pdfs")
-CHROMA_DIR = os.path.join(BASE_DIR, "chroma_db")
+# REPO_ROOT = the hackathon_project/ folder (works locally AND on Railway)
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# PDFs are at repo root: data/pdfs/<company>/
+PDF_DIR = os.path.join(REPO_ROOT, "data", "pdfs")
+
+# ChromaDB is at repo root: chroma_db/
+CHROMA_DIR = os.path.join(REPO_ROOT, "chroma_db")
 CHROMA_COLLECTION_NAME = "financial_reports"
 
 # Aliases used by ingest.py and retriever.py
-CHROMA_DB_PATH   = CHROMA_DIR
+CHROMA_DB_PATH = CHROMA_DIR
 CHROMA_COLLECTION = CHROMA_COLLECTION_NAME
 
-#API Keys
+# BASE_DIR kept for ingest.py PDF path building
+BASE_DIR = REPO_ROOT
+
+#  API Keys 
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-#Prompts 
+#  Prompts 
 
 RAG_PROMPT_TEMPLATE = """You are a financial analyst assistant. Using ONLY the documents provided below, answer the question accurately and concisely.
 
@@ -66,6 +74,7 @@ Rules:
 - For numbers, be precise. Don't round unless the document rounds.
 - If the question is not about Infosys, Amazon, or Alphabet financials, say: "This question is outside the scope of the provided documents."
 - If asked to compare, extract the specific metric for the company mentioned in the source documents and state it clearly with the company name.
+
 QUESTION: {question}
 
 DOCUMENTS:
@@ -92,7 +101,6 @@ Question: {question}
 
 Respond ONLY in JSON. No explanation."""
 
-
 SUB_QUESTION_SPLITTER_TEMPLATE = """You are a query decomposer for a financial document system.
 
 Break the complex question into 2-3 simple sub-questions that can each be answered independently.
@@ -110,9 +118,8 @@ Example:
 1. What was Infosys's net income in FY2024?
 2. What was Amazon's net income in FY2023?"""
 
-
-#API Settings 
+#  API Settings 
 
 API_HOST = "0.0.0.0"
-API_PORT = 8000
-CORS_ORIGINS = ["http://localhost:3000"]
+API_PORT = int(os.getenv("PORT", 8000))
+CORS_ORIGINS = ["*"]

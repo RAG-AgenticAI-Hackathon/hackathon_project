@@ -22,6 +22,7 @@ LLM_MODEL = config.LLM_MODEL
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -113,40 +114,52 @@ def root():
 @app.post("/ask", response_model=AskResponse)
 def ask(request: AskRequest):
     question = request.question.strip()
-    
+
     if not question:
         raise HTTPException(status_code=400, detail="Question cannot be empty")
-    
+
     # Step 1: classify
     classification = classify_question(question)
     question_type = classification.get("type", "SIMPLE")
     companies = classification.get("companies", ["Infosys"])
-    
+
+    # Keep only companies actually mentioned in the question
+    question_lower = question.lower()
+
+    mentioned_companies = []
+
+    for company in companies:
+        if company.lower() in question_lower:
+            mentioned_companies.append(company)
+
+    if mentioned_companies:
+        companies = mentioned_companies
+
+    print("QUESTION:", question)
+    print("CLASSIFICATION:", classification)
+    print("FINAL COMPANIES:", companies)
+
     # Step 2: COMPLEX — answer per company and combine
     if question_type == "COMPLEX":
         combined_answer = ""
         all_citations = []
-        
+
         for company in companies:
             ans, cits = get_answer(question, companies=[company])
             combined_answer += f"**{company}:**\n{ans}\n\n"
             all_citations.extend(cits)
-        
+
         return AskResponse(
             answer=combined_answer.strip(),
             citations=all_citations,
             question_type="COMPLEX"
         )
-    
+
     # Step 3: SIMPLE — answer directly
     answer, citations = get_answer(question, companies=companies)
-    
+
     return AskResponse(
         answer=answer,
         citations=citations,
         question_type="SIMPLE"
     )
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host=config.API_HOST, port=config.API_PORT)

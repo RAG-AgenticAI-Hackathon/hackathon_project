@@ -49,8 +49,8 @@ Top-K Chunks       Merge Chunks
 | Groq (Llama 3.3 70B) | Generating answers from retrieved content |
 | FastAPI | Backend API development |
 | React | Building the user interface |
-| Render | Backend deployment |
-| Vercel | Frontend deployment |
+| ngork | Backend deployment |
+| netlify | Frontend deployment |
 
 ---
 
@@ -94,8 +94,8 @@ npm start
 
 ## 7. Deployment
 
-- **Backend live URL:** 
-- **Frontend live URL:** 
+- **Backend live URL:** -https://unnoticed-overwrite-prior.ngrok-free.dev
+- **Frontend live URL:** -https://resonant-beijinho-ee0898.netlify.app
 
 ---
 
