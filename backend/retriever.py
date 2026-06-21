@@ -12,7 +12,9 @@ embedder = SentenceTransformer("all-MiniLM-L6-v2")
 
 # Connect to the existing ChromaDB (already filled by ingest.py)
 client = chromadb.PersistentClient(path=config.CHROMA_DB_PATH)
-collection = client.get_collection(config.CHROMA_COLLECTION)
+collection = client.get_or_create_collection(
+    config.CHROMA_COLLECTION
+)
 
 def retrieve(question, companies=None):
     """
