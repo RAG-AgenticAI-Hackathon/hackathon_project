@@ -20,13 +20,11 @@ groq_client = Groq(api_key=config.GROQ_API_KEY)
 LLM_MODEL = config.LLM_MODEL
 
 app.add_middleware(
-   app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)
 )
 
 # --- Request/Response shapes ---
