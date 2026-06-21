@@ -37,8 +37,7 @@ SIMILARITY_THRESHOLD = 0.1
 #Models 
 
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"   # runs locally, no API key needed
-# LLM_MODEL is unused: api.py hardcodes llama-3.3-70b-versatile via Groq.
-LLM_MODEL = "claude-sonnet-4-6"
+LLM_MODEL = "llama-3.3-70b-versatile"  # Groq-hosted model used by api.py
 LLM_MAX_TOKENS = 1024
 
 #Paths ─
@@ -117,4 +116,3 @@ Example:
 API_HOST = "0.0.0.0"
 API_PORT = 8000
 CORS_ORIGINS = ["http://localhost:3000"]
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")

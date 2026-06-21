@@ -86,17 +86,23 @@ function getMockResponse(question) {
 
 // ─── Real or mock fetch ───────────────────────────────────────────────────────
 
-export async function askQuestion(query) {
+export async function askQuestion(query, company) {
+  // 'All' (or empty) = no scoping. Otherwise prepend a light hint so scoping
+  // works in the demo even before the backend reads the `company` field.
+  const isScoped = company && company !== 'All';
+  const scopedQuery = isScoped ? `[Scope: ${company}] ${query}` : query;
+
   if (MOCK_MODE) {
     // Simulate network delay
     await new Promise(r => setTimeout(r, 1200 + Math.random() * 800));
-    return getMockResponse(query);
+    return getMockResponse(scopedQuery);
   }
 
   const response = await fetch(`${API_BASE}/ask`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ question: query }),
+    // `company` is optional/non-breaking — backend can ignore it for now.
+    body: JSON.stringify({ question: scopedQuery, company: isScoped ? company : null }),
   });
 
   if (!response.ok) {

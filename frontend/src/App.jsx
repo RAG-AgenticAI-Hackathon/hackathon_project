@@ -4,12 +4,14 @@ import { useState, useCallback } from 'react';
 import { BarChart2 } from 'lucide-react';
 import { ChatWindow } from './components/ChatWindow';
 import { ChatInput } from './components/ChatInput';
+import { CompanySelector } from './components/CompanySelector';
 import { askQuestion } from './api/chat';
 import { APP_NAME } from './constants';
 
 export default function App() {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [company, setCompany] = useState('All'); // 'All' = compare across all reports
 
   const handleSubmit = useCallback(async (question) => {
     const userMsg = { role: 'user', content: question, citations: [] };
@@ -17,7 +19,7 @@ export default function App() {
     setIsLoading(true);
 
     try {
-      const data = await askQuestion(question);
+      const data = await askQuestion(question, company);
       setMessages(prev => [
         ...prev,
         {
@@ -39,7 +41,7 @@ export default function App() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [company]);
 
   return (
     <div className="h-screen flex flex-col bg-[#0D0D1A] relative overflow-hidden">
@@ -92,8 +94,12 @@ export default function App() {
         onSelectQuestion={handleSubmit}
       />
 
-      {/* Input bar */}
+      {/* Company scope selector + input bar */}
       <div className="relative z-10">
+        <div className="px-6 pt-3 flex items-center gap-3">
+          <span className="text-[11px] text-gray-600 shrink-0">Scope:</span>
+          <CompanySelector selected={company} onSelect={setCompany} />
+        </div>
         <ChatInput onSubmit={handleSubmit} isLoading={isLoading} />
       </div>
     </div>

@@ -2,6 +2,7 @@
 // Automatically switches to NoResultsCard when backend says "not enough information"
 import { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { ShieldCheck } from 'lucide-react';
 import { CitationCard } from './CitationCard';
 import { NoResultsCard } from './NoResultsCard';
 
@@ -75,11 +76,18 @@ export function Message({ role, content, citations = [], isNew = false }) {
           </div>
         )}
 
-        {/* Source count pill */}
+        {/* Source count pill + grounding badge */}
         {!isUser && !outOfScope && citations.length > 0 && (
-          <span className="mt-1.5 text-[10px] text-gray-600">
-            {citations.length} source{citations.length > 1 ? 's' : ''} retrieved
-          </span>
+          <div className="mt-1.5 flex items-center gap-2">
+            <span className="text-[10px] text-gray-600">
+              {citations.length} source{citations.length > 1 ? 's' : ''} retrieved
+            </span>
+            {/* Grounding badge — derived client-side from citations, no backend field */}
+            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 text-[10px] font-medium text-emerald-400">
+              <ShieldCheck size={11} strokeWidth={2.25} />
+              Grounded in report
+            </span>
+          </div>
         )}
 
         {/* Citation accordion cards */}

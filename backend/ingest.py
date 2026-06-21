@@ -26,7 +26,12 @@ try:
 except:
     pass
 
-collection = client.create_collection(config.CHROMA_COLLECTION)
+# Use cosine distance so retriever.py's `similarity = 1 - distance` is correct.
+# (Chroma's default is L2/squared-euclidean, which makes that formula meaningless.)
+collection = client.create_collection(
+    config.CHROMA_COLLECTION,
+    metadata={"hnsw:space": "cosine"},
+)
 print("Created fresh ChromaDB collection")
 
 # --- Step 3: Define chunking function ---

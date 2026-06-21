@@ -17,7 +17,7 @@ from retriever import retrieve
 # --- Setup ---
 app = FastAPI(title="Financial RAG API")
 groq_client = Groq(api_key=config.GROQ_API_KEY)
-LLM_MODEL = "llama-3.3-70b-versatile"
+LLM_MODEL = config.LLM_MODEL
 
 app.add_middleware(
     CORSMiddleware,
