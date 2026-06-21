@@ -9,8 +9,8 @@ data/pdfs/
 *.pdf
 
 # ChromaDB (generated locally, not committed) 
-chroma_db/
-backend/chroma_db/
+#hroma_db/
+#backend/chroma_db/
 
 # Python 
 __pycache__/
