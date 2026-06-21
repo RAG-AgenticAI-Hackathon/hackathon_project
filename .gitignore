@@ -37,4 +37,4 @@ Thumbs.db
 # IDE 
 .vscode/
 .idea/
-*.swp
+*.swpchroma_db/
