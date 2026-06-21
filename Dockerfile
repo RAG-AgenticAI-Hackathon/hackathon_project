@@ -4,7 +4,16 @@ WORKDIR /app
 
 COPY . .
 
-RUN pip install -r backend/requirements.txt
+RUN pip install --no-cache-dir \
+    torch --index-url https://download.pytorch.org/whl/cpu \
+    sentence-transformers \
+    chromadb \
+    fastapi \
+    uvicorn \
+    pdfplumber \
+    groq \
+    python-dotenv \
+    pydantic
 
 RUN cd backend && python ingest.py
 
