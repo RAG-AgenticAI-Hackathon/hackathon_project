@@ -1,7 +1,7 @@
 # Secrets (NEVER commit these) 
 .env
 __pycache__/
-chroma_db/
+#chroma_db/
 *.pyc
 
 # PDF Data (too large for GitHub)
