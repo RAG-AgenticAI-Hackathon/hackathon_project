@@ -5,7 +5,7 @@ export const COMPANY_BADGE = {
 };
 
 export const EXAMPLE_QUESTIONS = [
-  "What was Infosys's net revenue in FY2023?",
+  "What was Infosys's net revenue in FY2024?",
   "Compare operating margins of Amazon and Alphabet",
   "What are Amazon's major business segments?",
   "How much did Alphabet spend on research and development?",
