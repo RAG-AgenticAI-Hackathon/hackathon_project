@@ -4,9 +4,7 @@ const MOCK_MODE = false;
 
 const API_BASE =
   import.meta.env.VITE_API_URL ||
-  "https://unnoticed-overwrite-prior.ngrok-free.dev";
-
-// Mock responses 
+  "https://charvitha4-financial-rag-backend.hf.space";
 
 const MOCK_SIMPLE = {
   answer:
